@@ -3,11 +3,10 @@ const utils = require('../utils/utils.js')
 const createSprintMatrix = () => {
 
   const now = new Date()
-  const avgStoriesPerWeek = 15
-  const stdStoriesPerWeek = 9
-  const numOfWeeksInSprint = 2
   const numOfSprintInYear = 26
   const futuresForecasted = 10
+  const avgStoriesPerWeek = 15
+  const stdStoriesPerWeek = 9
   let futures = []
 
   for (let j = 0; j < futuresForecasted; j++) {

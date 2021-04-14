@@ -4,8 +4,6 @@ const createEpicMatrix = () => {
 
   const numberOfEpics = 70
 
-
-
   const createEpicArray = (no) => {
 
     const result = []

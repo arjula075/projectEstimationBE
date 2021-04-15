@@ -1,8 +1,8 @@
 const utils = require('../utils/utils.js')
 
-const createEpicMatrix = () => {
+const createEpicMatrix = (params) => {
 
-  const numberOfEpics = 70
+  const numberOfEpics = parseInt(params.numberOfEpics)
 
   const createEpicArray = (no) => {
 

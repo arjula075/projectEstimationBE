@@ -2,7 +2,6 @@ const utils = require('../utils/utils.js')
 const epicService = require('../services/epicsService.js')
 const sprintService = require('../services/sprintsService.js')
 
-const parallerEpics = 3
 const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000
 
 const createCumulativePercentageResult = (matrix) => {
@@ -53,8 +52,9 @@ const createPercentageResult = (matrix) => {
   return matrix
 }
 
-const oneEpicSetFuture = (futureSprint, futureEpics, resultMatrix) => {
+const oneEpicSetFuture = (futureSprint, futureEpics, resultMatrix, params) => {
 
+  const parallerEpics = params.parallerEpics
   let sprints = JSON.parse(JSON.stringify(futureSprint))
   let epics = JSON.parse(JSON.stringify(futureEpics))
   let sprint = 0
@@ -75,6 +75,13 @@ const oneEpicSetFuture = (futureSprint, futureEpics, resultMatrix) => {
     }
 
     // epic scope reduction
+    const bugLottery = Math.random()
+    const bugPercentage = parseInt(params.bugPercentage)
+
+    if (bugLottery < bugPercentage) {
+      return resultMatrix
+    }
+
     try {
       wipEpics[wipEpicNo].stories = wipEpics[wipEpicNo].stories - 1
 
@@ -110,10 +117,10 @@ const oneEpicSetFuture = (futureSprint, futureEpics, resultMatrix) => {
 
 }
 
-const oneSprintFuture = (futureSprint, resultMatrix, epics, a) => {
+const oneSprintFuture = (futureSprint, resultMatrix, epics, a, params) => {
   epics.map(futureEpics => {
     a.countEpics = a.countEpics +1
-    resultMatrix = oneEpicSetFuture(futureSprint, futureEpics, resultMatrix)
+    resultMatrix = oneEpicSetFuture(futureSprint, futureEpics, resultMatrix, params)
   })
   return resultMatrix
 
@@ -131,12 +138,12 @@ const updateResultMatrix = (resultMatrix, epic, sprint) => {
 
 }
 
-const createRealResult = (resultMatrix, epics, sprints) => {
+const createRealResult = (resultMatrix, epics, sprints, params) => {
   //sprints go 100 futures => 52 sprints
   let a = {countSprints: 0, countEpics: 0}
   sprints.map(futureSprint => {
     a.countSprints = a.countSprints +1
-    resultMatrix = oneSprintFuture(futureSprint, resultMatrix, epics, a)
+    resultMatrix = oneSprintFuture(futureSprint, resultMatrix, epics, a, params)
   })
 
   return resultMatrix
@@ -159,10 +166,10 @@ const createInitialEpic = (sprints) => {
   return resultEpic
 }
 
-const createResultMatrix = () => {
+const createResultMatrix = (params) => {
 
-  const epics = epicService.createEpicMatrix()
-  const sprints = sprintService.createSprintMatrix()
+  const epics = epicService.createEpicMatrix(params)
+  const sprints = sprintService.createSprintMatrix(params)
   const resultEpic = createInitialEpic(sprints)
 
   // first we create that result matrix
@@ -176,12 +183,9 @@ const createResultMatrix = () => {
   })
 
   // and here are the actual heavy-lifting
-  let tmp = createRealResult(resultMatrix, epics, sprints)
+  let tmp = createRealResult(resultMatrix, epics, sprints, params)
   tmp = createPercentageResult(tmp)
   tmp = createCumulativePercentageResult(tmp)
-
-  console.log(tmp)
-
   return tmp
 }
 

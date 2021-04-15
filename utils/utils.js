@@ -8,7 +8,16 @@ const getOneRandomDist = (avg, std) => {
   return getRandomInt(avg - std, avg + std)
 }
 
+const paramsToObject = (entries) => {
+  const result = {}
+  for(const [key, value] of entries) { // each 'entry' is a [key, value] tupple
+    result[key] = value;
+  }
+  return result;
+}
+
 module.exports = {
   getRandomInt,
   getOneRandomDist,
+  paramsToObject,
 }

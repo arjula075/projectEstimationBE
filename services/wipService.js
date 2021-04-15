@@ -76,14 +76,17 @@ const oneEpicSetFuture = (futureSprint, futureEpics, resultMatrix, params) => {
 
     // epic scope reduction
     const bugLottery = Math.random()
-    const bugPercentage = parseInt(params.bugPercentage)
+    const bugPercentage = parseFloat(params.bugPercentage)
 
-    if (bugLottery < bugPercentage) {
-      return resultMatrix
-    }
+
+    //if (bugLottery < bugPercentage) {
+    //  return resultMatrix
+    //}
 
     try {
-      wipEpics[wipEpicNo].stories = wipEpics[wipEpicNo].stories - 1
+      if (bugLottery > bugPercentage) {
+        wipEpics[wipEpicNo].stories = wipEpics[wipEpicNo].stories - 1
+      }
 
       if (wipEpics[wipEpicNo].stories == 0) {
         resultMatrix = JSON.parse(JSON.stringify(updateResultMatrix(resultMatrix, wipEpics[wipEpicNo].epic, sprint)))
